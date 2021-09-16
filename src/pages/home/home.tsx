@@ -7,19 +7,17 @@ import { BalancesAndActivity } from '@components/popup/balances-and-activity';
 import { UserAccount } from '@pages/home/components/user-area';
 import { HomeActions } from '@pages/home/components/actions';
 
-const PageTop = () => (
-  <>
-    <UserAccount />
-    <HomeActions />
-  </>
-);
+import { usePromptUserToSetDiagnosticPermissions } from '@common/hooks/use-diagnostic-permission-prompt';
 
 export const PopupHome = () => {
+  usePromptUserToSetDiagnosticPermissions();
+
   return (
     <>
       <PopupContainer header={<Header />} requestType="auth">
         <Stack data-testid="home-page" flexGrow={1} spacing="loose">
-          <PageTop />
+          <UserAccount />
+          <HomeActions />
           <BalancesAndActivity />
         </Stack>
       </PopupContainer>

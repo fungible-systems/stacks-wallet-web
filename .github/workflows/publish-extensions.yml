@@ -2,8 +2,11 @@ name: Publish Extensions
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
   workflow_dispatch:
+
+env:
+  SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
 
 jobs:
   pre_run:
