@@ -30,6 +30,7 @@ export function useCurrentAccountAvailableStxBalance() {
 export function useAccountActivity() {
   return useAtomValue(currentAccountTransactionsState);
 }
+
 export function useAccountSingleTransaction(txid?: string) {
   const txs = useAccountActivity();
   if (!txid) return;

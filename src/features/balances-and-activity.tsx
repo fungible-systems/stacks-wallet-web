@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import type { StackProps } from '@stacks/ui';
 import { Box, color, Flex, SlideFade, Spinner, Stack } from '@stacks/ui';
 import { TokenAssets } from '@components/popup/token-assets';
@@ -7,13 +7,12 @@ import { Caption } from '@components/typography';
 import { NoActivityIllustration } from '@components/vector/no-activity';
 import { Tabs } from '@components/tabs';
 
-import { useAccountActivity } from '@store/accounts/account.hooks';
 import { useHomeTabs } from '@common/hooks/use-home-tabs';
-import { HomePageSelectors } from '@tests/page-objects/home-page.selectors';
 import { useCurrentAccountLocalTxids } from '@store/accounts/account-activity.hooks';
-import { TransactionList } from '@components/popup/transaction-list';
-import { createTxDateFormatList } from '@common/group-txs-by-date';
 import { LocalTxList } from '@features/local-transaction-activity/local-tx-list';
+import { useAccountTransactionsWithTransfers } from '@common/hooks/account/use-account-transactions-with-transfers.hooks';
+import { TransactionList } from '@components/popup/transaction-list';
+import { HomePageSelectors } from '@tests/page-objects/home-page.selectors';
 
 function EmptyActivity() {
   return (
@@ -30,11 +29,7 @@ function EmptyActivity() {
 }
 
 const ActivityList = () => {
-  const transactions = useAccountActivity();
-  const groupedTxs = useMemo(
-    () => (transactions ? createTxDateFormatList(transactions) : []),
-    [transactions]
-  );
+  const transactions = useAccountTransactionsWithTransfers();
   const txids = useCurrentAccountLocalTxids();
   const hasTxs = txids.length > 0 || transactions.length > 0;
   return !hasTxs ? (
@@ -42,7 +37,7 @@ const ActivityList = () => {
   ) : (
     <>
       {txids.length > 0 && <LocalTxList txids={txids} />}
-      {transactions.length > 0 && <TransactionList txsByDate={groupedTxs} />}
+      {transactions.length > 0 && <TransactionList txs={transactions} />}
     </>
   );
 };
