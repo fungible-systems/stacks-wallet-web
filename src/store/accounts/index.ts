@@ -149,8 +149,8 @@ export const currentAnchoredAccountBalancesState = atom(get => {
 });
 
 export const currentAccountConfirmedTransactionsState = atom<Transaction[]>(get => {
-  const transactionsWithTransfer = get(accountTransactionsWithTransfersState);
-  return transactionsWithTransfer.map(atx => atx.tx);
+  const transactionsWithTransfers = get(accountTransactionsWithTransfersState);
+  return transactionsWithTransfers.map(atx => atx.tx);
 });
 
 export const currentAccountMempoolTransactionsState = atom<MempoolTransaction[]>(get => {

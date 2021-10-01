@@ -25,7 +25,7 @@ enum AccountClientKeys {
   BalancesClient = 'account/BalancesClient',
   AnchoredBalancesClient = 'account/AnchoredBalancesClient',
   TransactionsClient = 'account/TransactionsClient',
-  TransactionsWithTransferClient = 'account/TransactionsWithTransferClient',
+  TransactionsWithTransfersClient = 'account/TransactionsWithTransfersClient',
   MempoolTransactionsClient = 'account/MempoolTransactionsClient',
 }
 

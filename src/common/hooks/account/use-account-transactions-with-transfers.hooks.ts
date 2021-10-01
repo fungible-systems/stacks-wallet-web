@@ -14,7 +14,7 @@ const QUERY_OPTIONS = {
   refetchOnWindowFocus: 'always',
 };
 
-export function useGetAccountTransactionsWithTransfer(reactQueryOptions: UseQueryOptions = {}) {
+export function useGetAccountTransactionsWithTransfers(reactQueryOptions: UseQueryOptions = {}) {
   const principal = useCurrentAccountStxAddressState();
   const { url: networkUrl } = useCurrentNetworkState();
   const { accountsApi } = useAccountsApi();
@@ -33,11 +33,11 @@ export function useGetAccountTransactionsWithTransfer(reactQueryOptions: UseQuer
 }
 
 export function useAccountTransactionsWithTransfers() {
-  const [accountTransactionsWithTransfer, setAccountTransactionsWithTransfer] =
+  const [accountTransactionsWithTransfers, setAccountTransactionsWithTransfers] =
     useAccountTransactionsWithTransfersState();
   const onSuccess = (data: PaginatedResults<AddressTransactionWithTransfers>) => {
-    setAccountTransactionsWithTransfer(data.results);
+    setAccountTransactionsWithTransfers(data.results);
   };
-  useGetAccountTransactionsWithTransfer({ ...QUERY_OPTIONS, onSuccess } as UseQueryOptions);
-  return accountTransactionsWithTransfer;
+  useGetAccountTransactionsWithTransfers({ ...QUERY_OPTIONS, onSuccess } as UseQueryOptions);
+  return accountTransactionsWithTransfers;
 }

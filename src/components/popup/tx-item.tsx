@@ -24,21 +24,13 @@ import {
   getTxCaption,
   getTxTitle,
   getTxValue,
-  isAddressTransactionWithTransfer,
+  isAddressTransactionWithTransfers,
   StxTransfer,
 } from '@common/transactions/transaction-utils';
 
 type Tx = MempoolTransaction | Transaction;
 
-interface TxItemProps {
-  transaction: Tx;
-}
-
-interface TxViewProps {
-  transaction: AddressTransactionWithTransfers | Tx;
-}
-
-const Status: React.FC<{ transaction: Tx } & BoxProps> = ({ transaction, ...rest }) => {
+const Status = ({ transaction, ...rest }: { transaction: Tx } & BoxProps) => {
   const isPending = isPendingTx(transaction as any);
   const isFailed = !isPending && transaction.tx_status !== 'success';
   return isFailed || isPending ? (
@@ -101,10 +93,10 @@ const SpeedUpButton = ({
   );
 };
 
-const TxTransfers: React.FC<{ transaction: AddressTransactionWithTransfers & BoxProps }> = ({
-  transaction,
-  ...rest
-}) => {
+interface TxTransfersProps {
+  transaction: AddressTransactionWithTransfers & BoxProps;
+}
+const TxTransfers = ({ transaction, ...rest }: TxTransfersProps) => {
   return (
     <>
       {transaction.stx_transfers.map((stxTransfer, index) => (
@@ -114,13 +106,15 @@ const TxTransfers: React.FC<{ transaction: AddressTransactionWithTransfers & Box
   );
 };
 
-const TxItemRow: React.FC<{
+interface TxItemRowProps {
   title: string;
   value: number | string | null;
   caption?: string;
   icon: JSX.Element;
-  onClick?: () => Window | null;
-}> = ({ title, caption, value, icon, onClick, ...rest }) => {
+  onClick?: () => void;
+}
+
+const TxItemRow = ({ title, caption, value, icon, onClick, ...rest }: TxItemRowProps) => {
   const [component, bind] = usePressable(true);
   return (
     <Box position="relative" cursor="pointer" {...bind} {...rest}>
@@ -156,10 +150,12 @@ const TxItemRow: React.FC<{
   );
 };
 
-const StxTransferItem: React.FC<{
+interface StxTransferItemProps {
   stxTransfer: StxTransfer;
   parentTx: AddressTransactionWithTransfers;
-}> = ({ stxTransfer, parentTx }) => {
+}
+
+const StxTransferItem = ({ stxTransfer, parentTx }: StxTransferItemProps) => {
   const currentAccount = useCurrentAccount();
   const { handleOpenTxLink } = useExplorerLink();
   const title = 'Stacks Token Transfer';
@@ -191,9 +187,13 @@ const StxTransferItem: React.FC<{
   );
 };
 
-export const TxView: React.FC<TxViewProps & BoxProps> = ({ transaction, ...rest }) => {
-  if (!isAddressTransactionWithTransfer(transaction))
-    return <TxItem transaction={transaction as Tx} {...rest} />; // This is a normal Transaction or MempoolTransaction
+interface TxViewProps {
+  transaction: AddressTransactionWithTransfers | Tx;
+}
+
+export const TxView = ({ transaction, ...rest }: TxViewProps & BoxProps) => {
+  if (!isAddressTransactionWithTransfers(transaction))
+    return <TxItem transaction={transaction} {...rest} />; // This is a normal Transaction or MempoolTransaction
 
   // Show transfer only for contract calls
   if (transaction.tx.tx_type !== 'contract_call')
@@ -207,7 +207,11 @@ export const TxView: React.FC<TxViewProps & BoxProps> = ({ transaction, ...rest 
   );
 };
 
-export const TxItem: React.FC<TxItemProps & BoxProps> = ({ transaction, ...rest }) => {
+interface TxItemProps {
+  transaction: Tx;
+}
+
+export const TxItem = ({ transaction, ...rest }: TxItemProps & BoxProps) => {
   const [component, bind, { isHovered }] = usePressable(true);
   const { handleOpenTxLink } = useExplorerLink();
   const currentAccount = useCurrentAccount();

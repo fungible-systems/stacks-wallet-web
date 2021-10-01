@@ -146,7 +146,7 @@ export function txHasTime(tx: Tx) {
   );
 }
 
-export function isAddressTransactionWithTransfer(
+export function isAddressTransactionWithTransfers(
   transaction: AddressTransactionWithTransfers | Tx
 ): transaction is AddressTransactionWithTransfers {
   return 'tx' in transaction;
