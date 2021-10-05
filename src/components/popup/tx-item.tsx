@@ -93,8 +93,8 @@ const SpeedUpButton = ({
   );
 };
 
-interface TxTransfersProps {
-  transaction: AddressTransactionWithTransfers & BoxProps;
+interface TxTransfersProps extends BoxProps {
+  transaction: AddressTransactionWithTransfers;
 }
 const TxTransfers = ({ transaction, ...rest }: TxTransfersProps) => {
   return (
@@ -187,11 +187,10 @@ const StxTransferItem = ({ stxTransfer, parentTx }: StxTransferItemProps) => {
   );
 };
 
-interface TxViewProps {
+interface TxViewProps extends BoxProps {
   transaction: AddressTransactionWithTransfers | Tx;
 }
-
-export const TxView = ({ transaction, ...rest }: TxViewProps & BoxProps) => {
+export const TxView = ({ transaction, ...rest }: TxViewProps) => {
   if (!isAddressTransactionWithTransfers(transaction))
     return <TxItem transaction={transaction} {...rest} />; // This is a normal Transaction or MempoolTransaction
 
@@ -207,11 +206,10 @@ export const TxView = ({ transaction, ...rest }: TxViewProps & BoxProps) => {
   );
 };
 
-interface TxItemProps {
+interface TxItemProps extends BoxProps {
   transaction: Tx;
 }
-
-export const TxItem = ({ transaction, ...rest }: TxItemProps & BoxProps) => {
+export const TxItem = ({ transaction, ...rest }: TxItemProps) => {
   const [component, bind, { isHovered }] = usePressable(true);
   const { handleOpenTxLink } = useExplorerLink();
   const currentAccount = useCurrentAccount();
