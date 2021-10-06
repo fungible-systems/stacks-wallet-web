@@ -56,3 +56,16 @@ export function useSearchInput() {
 export function useUpdateSearchInput() {
   return useUpdateAtom(searchInputStore);
 }
+
+export function useAssetByIdentifier(identifier: string) {
+  const assets = useAtomValue(assetsAnchoredState);
+  if (!identifier) return;
+  const [contractId] = identifier.split('::');
+  const [contractAddress, contractName] = contractId.split('.');
+  return assets.find(
+    asset =>
+      asset.type === 'ft' &&
+      asset.contractAddress === contractAddress &&
+      asset.contractName === contractName
+  );
+}

@@ -21,12 +21,15 @@ import { FiFastForward } from 'react-icons/all';
 import { StxIcon } from '@components/icons/stx-icon';
 import { FiArrowDown as IconArrowDown, FiArrowUp as IconArrowUp } from 'react-icons/fi';
 import {
+  calculateTokenTransferAmount,
+  FtTransfer,
   getTxCaption,
   getTxTitle,
   getTxValue,
   isAddressTransactionWithTransfers,
   StxTransfer,
 } from '@common/transactions/transaction-utils';
+import { useAssetByIdentifier } from '@store/assets/asset.hooks';
 
 type Tx = MempoolTransaction | Transaction;
 
@@ -96,12 +99,18 @@ const SpeedUpButton = ({
 interface TxTransfersProps extends BoxProps {
   transaction: AddressTransactionWithTransfers;
 }
+
 const TxTransfers = ({ transaction, ...rest }: TxTransfersProps) => {
   return (
     <>
       {transaction.stx_transfers.map((stxTransfer, index) => (
         <StxTransferItem stxTransfer={stxTransfer} parentTx={transaction} {...rest} key={index} />
       ))}
+      {transaction.ft_transfers
+        ? transaction.ft_transfers.map((ftTransfer, index) => (
+            <FtTransferItem ftTransfer={ftTransfer} parentTx={transaction} {...rest} key={index} />
+          ))
+        : null}
     </>
   );
 };
@@ -187,9 +196,46 @@ const StxTransferItem = ({ stxTransfer, parentTx }: StxTransferItemProps) => {
   );
 };
 
+interface FtTransferItemProps {
+  ftTransfer: FtTransfer;
+  parentTx: AddressTransactionWithTransfers;
+}
+
+const FtTransferItem = ({ ftTransfer, parentTx }: FtTransferItemProps) => {
+  const currentAccount = useCurrentAccount();
+  const { handleOpenTxLink } = useExplorerLink();
+  const asset = useAssetByIdentifier(ftTransfer.asset_identifier);
+  const title = `${asset?.meta?.name || 'Token'} Transfer`;
+  const caption = getTxCaption(parentTx.tx) ?? '';
+  const isOriginator = ftTransfer.sender === currentAccount?.address;
+
+  const displayAmount = calculateTokenTransferAmount(asset, ftTransfer.amount);
+  const value = `${isOriginator ? '-' : ''}${displayAmount}`;
+
+  const icon = isOriginator ? IconArrowUp : IconArrowDown;
+
+  const iconWrapper = (
+    <Circle position="relative" size="36px" bg={color('accent')} color={color('bg')}>
+      <Box as={StxIcon} />
+      <TypeIconWrapper icon={icon} bg={'brand'} />
+    </Circle>
+  );
+
+  return (
+    <TxItemRow
+      title={title}
+      caption={caption}
+      value={value}
+      onClick={() => handleOpenTxLink(parentTx.tx.tx_id)}
+      icon={iconWrapper}
+    />
+  );
+};
+
 interface TxViewProps extends BoxProps {
   transaction: AddressTransactionWithTransfers | Tx;
 }
+
 export const TxView = ({ transaction, ...rest }: TxViewProps) => {
   if (!isAddressTransactionWithTransfers(transaction))
     return <TxItem transaction={transaction} {...rest} />; // This is a normal Transaction or MempoolTransaction

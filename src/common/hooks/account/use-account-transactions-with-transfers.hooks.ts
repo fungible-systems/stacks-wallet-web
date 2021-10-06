@@ -14,7 +14,11 @@ const QUERY_OPTIONS = {
   refetchOnWindowFocus: 'always',
 };
 
-export function useGetAccountTransactionsWithTransfers(reactQueryOptions: UseQueryOptions = {}) {
+enum AccountClientKeys {
+  TransactionsWithTransfersClient = 'account/TransactionsWithTransfersClient',
+}
+
+function useGetAccountTransactionsWithTransfers(reactQueryOptions: UseQueryOptions = {}) {
   const principal = useCurrentAccountStxAddressState();
   const { url: networkUrl } = useCurrentNetworkState();
   const { accountsApi } = useAccountsApi();
@@ -26,10 +30,14 @@ export function useGetAccountTransactionsWithTransfers(reactQueryOptions: UseQue
     });
   };
 
-  return useQuery(['account/transactionsWithTransfers', principal, networkUrl], fetch, {
-    enabled: !!principal || !!networkUrl,
-    ...reactQueryOptions,
-  });
+  return useQuery(
+    [AccountClientKeys.TransactionsWithTransfersClient, principal, networkUrl],
+    fetch,
+    {
+      enabled: !!principal || !!networkUrl,
+      ...reactQueryOptions,
+    }
+  );
 }
 
 export function useAccountTransactionsWithTransfers() {

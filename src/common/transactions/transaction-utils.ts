@@ -26,10 +26,18 @@ import { displayDate, isoDateToLocalDateSafe, todaysIsoDate } from '@common/date
 import { getContractName, truncateMiddle } from '@stacks/ui-utils';
 import { stacksValue } from '@common/stacks-utils';
 import { BigNumber } from 'bignumber.js';
+import { AssetWithMeta } from '@common/asset-types';
 
 type Tx = MempoolTransaction | Transaction;
 
 export interface StxTransfer {
+  amount: string;
+  sender?: string;
+  recipient?: string;
+}
+
+export interface FtTransfer {
+  asset_identifier: string;
   amount: string;
   sender?: string;
   recipient?: string;
@@ -195,7 +203,6 @@ export function createTxDateFormatList(txs: AddressTransactionWithTransfers[]) {
 }
 
 export const getTxCaption = (transaction: Tx) => {
-  if (!transaction) return null;
   switch (transaction.tx_type) {
     case 'smart_contract':
       return truncateMiddle(transaction.smart_contract.contract_id, 4);
@@ -243,4 +250,14 @@ export const getTxTitle = (tx: Tx) => {
     case 'poison_microblock':
       return 'Poison Microblock';
   }
+};
+
+// calculate the real amount of the token based on the decimal number
+// specified in the corresponding token smart contract
+export const calculateTokenTransferAmount = (
+  asset: AssetWithMeta | undefined,
+  amount: number | string | BigNumber
+) => {
+  if (!asset || !asset.meta) return;
+  return new BigNumber(amount).shiftedBy(-asset.meta.decimals);
 };

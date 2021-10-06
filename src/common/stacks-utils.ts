@@ -75,3 +75,8 @@ export function validateAddressChain(address: string, currentNetwork: Network) {
 }
 
 export const getTicker = (assetName: string) => assetName.slice(0, 3).toUpperCase();
+
+export const amountToDecimals = (value: number | string | BigNumber, decimals: number) => {
+  const amount = initBigNumber(value);
+  return amount.toNumber().toLocaleString('en-US', { maximumFractionDigits: decimals });
+};
