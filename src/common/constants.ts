@@ -9,6 +9,7 @@ export const transition = 'all .2s cubic-bezier(.215,.61,.355,1)';
 export const USERNAMES_ENABLED = process.env.USERNAMES_ENABLED === 'true';
 
 export const IS_TEST_ENV = process.env.TEST_ENV === 'true';
+export const IS_DEV_ENV = process.env.NODE_ENV === 'development';
 
 export const PERSISTENCE_CACHE_TIME = 1000 * 60 * 60 * 12; // 12 hours
 
@@ -87,3 +88,7 @@ export enum QueryRefreshRates {
   MEDIUM = 10_000,
   FAST = 3_500,
 }
+
+export const SEGMENT = {
+  WRITE_KEY: 'XXX',
+};

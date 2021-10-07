@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ThemeProvider, ColorModeProvider } from '@stacks/ui';
 import { QueryClientProvider } from 'react-query';
 import { jotaiWrappedReactQueryQueryClient as queryClient } from '@store/common/common.hooks';
@@ -16,11 +16,26 @@ import { SettingsPopover } from '@features/settings-dropdown/settings-popover';
 import { AppErrorBoundary } from '@features/errors/app-error-boundary';
 import { TransactionSettingsDrawer } from '@features/fee-nonce-drawers/transaction-settings-drawer';
 import { SpeedUpTransactionDrawer } from '@features/fee-nonce-drawers/speed-up-transaction-drawer';
+import { AnalyticsBrowser } from '@segment/analytics-next';
+import { SEGMENT } from '@common/constants';
+import { analyticsState } from '@store/common/analytics';
+import { useAtom } from 'jotai';
 
 export const App: React.FC = () => {
   useEffect(() => {
     (window as any).__APP_VERSION__ = VERSION;
   }, []);
+  const [_, setAnalytics] = useAtom(analyticsState);
+  const [writeKey] = useState(SEGMENT.WRITE_KEY);
+
+  useEffect(() => {
+    const loadAnalytics = async () => {
+      const [response] = await AnalyticsBrowser.load({ writeKey });
+      console.log('setting analytics');
+      setAnalytics(response);
+    };
+    void loadAnalytics();
+  }, [setAnalytics, writeKey]);
 
   return (
     <ThemeProvider theme={theme}>

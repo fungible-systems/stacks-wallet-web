@@ -18,6 +18,7 @@ import {
   useSetLocalTxsCallback,
 } from '@store/accounts/account-activity.hooks';
 import { todaysIsoDate } from '@common/date-utils';
+import { useAnalytics } from '@common/hooks/use-analytics';
 
 function getErrorMessage(
   reason: TxBroadcastResultRejected['reason'] | 'ConflictingNonceInMempool'
@@ -53,6 +54,7 @@ export function useSubmitTransactionCallback({
   const { setActiveTabActivity } = useHomeTabs();
   const setLocalTxs = useSetLocalTxsCallback();
   const externalTxid = useCurrentAccountTxIdsState();
+  const analytics = useAnalytics();
 
   return useCallback<(tx: StacksTransaction) => Promise<void>>(
     async transaction => {
@@ -75,6 +77,7 @@ export function useSubmitTransactionCallback({
           }
           if (nonce) await doSetLatestNonce(nonce);
           toast.success('Transaction submitted!');
+          analytics.track('Broadcast transaction');
           doChangeScreen(ScreenPaths.HOME);
           onClose();
           setIsIdle();
@@ -90,17 +93,18 @@ export function useSubmitTransactionCallback({
       }
     },
     [
-      setLocalTxs,
-      doSetLatestNonce,
-      replaceByFee,
-      onClose,
-      refreshAccountData,
-      doChangeScreen,
       setIsLoading,
-      setIsIdle,
+      replaceByFee,
       stacksNetwork,
-      setActiveTabActivity,
+      onClose,
+      setIsIdle,
       externalTxid,
+      doSetLatestNonce,
+      analytics,
+      doChangeScreen,
+      setActiveTabActivity,
+      refreshAccountData,
+      setLocalTxs,
     ]
   );
 }

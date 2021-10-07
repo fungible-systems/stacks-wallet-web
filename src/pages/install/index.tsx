@@ -19,6 +19,7 @@ const Actions: React.FC<StackProps> = props => {
   const register = useCallback(async () => {
     setIsCreatingWallet(true);
     await doMakeWallet();
+    console.log('Generate new Secret Key');
     if (decodedAuthRequest) {
       doChangeScreen(ScreenPaths.SET_PASSWORD);
     }

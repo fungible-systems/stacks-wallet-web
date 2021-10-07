@@ -13,6 +13,7 @@ import {
   useSeedInputErrorState,
   useSeedInputState,
 } from '@store/onboarding/onboarding.hooks';
+import { useAnalytics } from '../use-analytics';
 
 export function useSignIn() {
   const [, setMagicRecoveryCode] = useMagicRecoveryCodeState();
@@ -61,6 +62,7 @@ export function useSignIn() {
 
       try {
         await doStoreSeed({ secretKey: parsedKeyInput });
+        analytics.track('Submit valid Secret Key');
         doChangeScreen(ScreenPaths.SET_PASSWORD);
         setIsIdle();
       } catch (error) {
@@ -123,6 +125,7 @@ export function useSignIn() {
   );
 
   const onBack = useCallback(() => doChangeScreen(ScreenPaths.HOME), [doChangeScreen]);
+  const analytics = useAnalytics();
 
   const onKeyDown = useCallback(
     (e: KeyboardEvent) => {
