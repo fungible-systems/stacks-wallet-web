@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.19.4
+
+### Patch Changes
+
+- [#1785](https://github.com/blockstack/stacks-wallet-web/pull/1785) [`55684b197`](https://github.com/blockstack/stacks-wallet-web/commit/55684b197c3b196d8a1377a1c435d16010addea7) Thanks [@fbwoolf](https://github.com/fbwoolf)! - This fixes signing out from the locked transaction popup.
+
 ## 2.19.3
 
 ### Patch Changes
